@@ -1,4 +1,7 @@
-*Import data
+**********************************************
+*Import data*
+**********************************************
+
 infile using mar_inc_13, clear
 
   rename R0000100 PUBID_1997
@@ -40,22 +43,34 @@ infile using mar_inc_13, clear
   rename Z9060800 CVC_WKSWK_YR_ET_98_XRND 
   rename Z9060900 CVC_WKSWK_YR_ET_99_XRND 
   rename Z9069704 CVC_HOURS_WK_YR_ALL_13_XRND 
-  
+
+
+*Adding correct work experience data*
 merge 1:1 PUBID_1997 using correct_exper_updated
 drop _merge
 
-  
+
+*Reformat variables to lowercase*  
 findit tolower
 tolower
 
-*ID
+
+
+
+**********************************************
+*Data Cleaning & Variable Construction
+**********************************************
+
+**id**
+
 rename pubid_1997 id
 label var id "identification number of respondent"
 
 
 
 
-*Sex - Female
+**Sex - female**
+
 rename keysex_1997 sex
 codebook sex
 
@@ -72,11 +87,13 @@ drop sex
 
 
 
-*Race - black, hispanic, mixed
+**Race - black, hispanic, mixed**
+
 rename keyrace_ethnicity_1997 race
 codebook race
 
-	*black
+	*black*
+
 	generate black=1 if race==1
 	replace black=0 if black==.
 	label var black "=1 if respondent is black"
@@ -84,8 +101,10 @@ codebook race
 	label values black vlblack
 	
 	codebook black
-	
-	*hispanic
+
+
+	*hispanic*
+
 	generate hispanic=1 if race==2
 	replace hispanic=0 if hispanic==.
 	label var hispanic "=1 if respondent is hispanic"
@@ -93,8 +112,10 @@ codebook race
 	label values hispanic vlhispanic
 	
 	codebook hispanic
-	
-	*mixed
+
+
+	*mixed*
+
 	generate mixed=1 if race==3
 	replace mixed=0 if mixed==.
 	label var mixed "=1 if respondent is mixed"
@@ -108,7 +129,8 @@ drop race
 
 
 
-*Age
+**Age**
+
 rename cv_age_int_date_2013 age
 codebook age // 1,844 observations of -5 (non-interviews)
 
@@ -121,7 +143,8 @@ codebook age
 
 
 
-*Region - northeast, northcentral, west
+**Region - northeast, northcentral, west**
+
 rename cv_census_region_2013 region
 codebook region // 65 observations of -4 (valid skips), 3 observations of -3 (invalid skips)
 
@@ -129,7 +152,8 @@ drop if region<0 // could distort results, cannot be incorporated into regressio
 
 codebook region
 
-	*northeast
+	*northeast*
+
 	generate northeast=1 if region==1
 	replace northeast=0 if northeast==.
 	label var northeast "=1 if respondent resides in the Northeast region (CT, ME, MA, NH, NJ, NY, PA, RI, VT)"
@@ -137,8 +161,10 @@ codebook region
 	label values northeast vlnortheast
 	
 	codebook northeast
-	
-	*northcentral
+
+
+	*northcentral*
+
 	generate northcentral=1 if region==2
 	replace northcentral=0 if northcentral==.
 	label var northcentral "=1 if respondent resides in northcentral region (IL, IN, IA, KS, MI, MN, MO, NE, OH, ND, SD, WI)"
@@ -146,8 +172,10 @@ codebook region
 	label values northcentral vlnorthcentral
 	
 	codebook northcentral
+
 	
-	*west
+	*west*
+
 	generate west=1 if region==4
 	replace west=0 if west==.
 	label var west "=1 if respondent resides in the western region(AK, AZ, CA, CO, HI, ID, MT, NV, NM, OR, UT, WA, WY)"
@@ -161,7 +189,8 @@ drop region
 
 
 
-*Education (Highest grade completed)
+**Education (highest grade completed)**
+
 rename cv_hgc_ever_edt_2013 educ
 label var educ "highest grade respondent has ever completed"
 codebook educ
@@ -178,7 +207,8 @@ tab educ
 
 
 
-*Urban vs. Rural
+**Urban vs. Rural**
+
 rename cv_urban_rural_2013 urbrur
 codebook urbrur
 
@@ -199,14 +229,15 @@ drop urbrur
 
 
 
-*number of biological or adopted children currently residing in the household
+**number of biological or adopted children currently residing in the household**
+
 browse bioadoptchild_reside_01_2013 bioadoptchild_reside_02_2013 bioadoptchild_reside_03_2013 bioadoptchild_reside_04_2013 bioadoptchild_reside_05_2013 bioadoptchild_reside_06_2013 bioadoptchild_reside_07_2013 bioadoptchild_reside_08_2013 bioadoptchild_reside_09_2013 bioadoptchild_reside_10_2013 bioadoptchild_reside_11_2013 
 
 sort bioadoptchild_reside_01_2013 bioadoptchild_reside_02_2013 bioadoptchild_reside_03_2013 bioadoptchild_reside_04_2013 bioadoptchild_reside_05_2013 bioadoptchild_reside_06_2013 bioadoptchild_reside_07_2013 bioadoptchild_reside_08_2013 bioadoptchild_reside_09_2013 bioadoptchild_reside_10_2013 bioadoptchild_reside_11_2013 
 
 count if bioadoptchild_reside_01_2013==-4 // 2556 observations (valid skips). maybe means has no kids?
 count if bioadoptchild_reside_01_2013==0 // 799 observations. means has kids but doesn't reside in same houshold?
-*if -4 (valid skip) means that they don't have kids then I should probably change those into zeroes as well because technically, they have no children residing within the hosuehold
+*if -4 (valid skip) means that they don't have kids then convert to 0 to include when running regression because technically, they also have no children residing within the hosuehold
 
 codebook bioadoptchild_reside_01_2013
 generate kids1=1 if bioadoptchild_reside_01_2013==1
@@ -294,7 +325,10 @@ drop bioadoptchild_reside_01_2013 bioadoptchild_reside_02_2013 bioadoptchild_res
 	drop numhhkids
 
 
-*Married
+
+
+**Married**
+
 rename ymar_620_2013 marstat
 codebook marstat // 1 observation of -2, 3 observations of -3
 
@@ -313,7 +347,8 @@ drop marstat
 
 
 
-*Income
+**Income**
+
 rename yinc_new2_2015 income
 label var income "total income from wages and salary in 2013"
 tab income // 85 observations of 222152 which are top-coded values
@@ -331,12 +366,13 @@ tab income
 
 gen lnincome=ln(income+1)
 label var lnincome "ln(income+1)"
-***********************4229 sample number************************
 
 
 
 
-*Experience
+
+**Experience**
+
 rename cvc_wkswk_yr_all_97_xrnd wkswkany97
 tab wkswkany97
 replace wkswkany97=. if wkswkany97<0
@@ -422,7 +458,8 @@ drop wkswkany97 wkswkany98 wkswkany99 wkswkany00 wkswkany01 wkswkany02 wkswkany0
 
 
 
-*Interaction terms
+**Interaction terms**
+
 gen marriedxfemale=(married*female)
 label var marriedxfemale "interaction term: married x female"
 
@@ -432,13 +469,16 @@ label var femalexchild "interaction term: female x hhkid"
 
 
 
-*Drop unecessary variables
+**Drop unecessary variables**
 drop cvc_wkswk_yr_et_00_xrnd cvc_wkswk_yr_et_01_xrnd cvc_wkswk_yr_et_02_xrnd cvc_wkswk_yr_et_03_xrnd cvc_wkswk_yr_et_04_xrnd cvc_wkswk_yr_et_05_xrnd cvc_wkswk_yr_et_06_xrnd cvc_wkswk_yr_et_07_xrnd cvc_wkswk_yr_et_08_xrnd cvc_wkswk_yr_et_09_xrnd cvc_wkswk_yr_et_10_xrnd cvc_wkswk_yr_et_11_xrnd cvc_wkswk_yr_et_12_xrnd cvc_wkswk_yr_et_13_xrnd cvc_wkswk_yr_et_97_xrnd cvc_wkswk_yr_et_98_xrnd cvc_wkswk_yr_et_99_xrnd
 
 drop yinc_new3_2015 
 
 drop cvc_hours_wk_yr_all_13_xrnd
 
+
+
+**Save cleaned dataset and export copy as .csv**
 save mar_inc_13_updated, replace
 
 export delimited using "mar_inc_13_updated.csv", replace
