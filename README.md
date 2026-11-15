@@ -128,7 +128,7 @@ Table 2 presents regression results from Stata after running the OLS regression 
 ![Regression Output Table](02_summary_statistics_regression/03_regression_output_table.png)
 
 ### Hypothesis 1: Marriage Premium for Men
-*married*: β₁ = 0.259
+***married*: β₁ = 0.259**
 * statistically significant at the 1% level
 * reject **H<sub>0</sub>** because the estimated coefficient (β₁ = 0.259) was positive and statistically significant
 * evidence supports a marriage premium for men
@@ -142,7 +142,7 @@ Table 2 presents regression results from Stata after running the OLS regression 
 * evidence supports a tiny marriage premium for women
 
 ### Hypothesis 3: Gender Difference in the Marriage Effect on Income
-*marriedxfemale*: β₃ = -0.253
+***marriedxfemale*: β₃ = -0.253**
 * statistically significant at the 1% level
 * reject **H<sub>0</sub>** because the estimated coefficient (β₃ = -0.253) was negative and statistically significant
 * evidence supports that income effects from being married differ across gender
@@ -171,3 +171,33 @@ This project examined the relationship between marital status and income across 
 The other findings further suggest that the presence of children in the household may play an important role in the income differences between men and women in this sample. Women with at least one child in the household experienced substantially lower income effects relative to the income effects men with at least one child in the household experienced. The presence of children in the household may change incentives for household specialization, as their needs might increase the value of household production potentially resulting in a shift towards complete specialization.
 
 Despite the significant results and findings, there are limitations that come with this project such as only choosing one survey year to analyze and unobserved factors or characteristics. Although there are many limitations, the analysis of this sample provided potentially meaningful insight into how marriage, presence of children in households, and human capital are associated with income. 
+
+## 📂 Repository Structure
+
+```text
+marriage-income-regression-analysis/
+│
+├── 01_data_cleaning/
+│   ├── 01_data_cleaning_validation.do
+│   ├── 02_mar_inc_13_updated.csv
+│   └── 03_mar_inc_13_updated.dta
+│
+├── 02_summary_statistics_regression/
+│   ├── 01_summary_statistics_regression.do
+│   ├── 02_summary_statistics_output_table.png
+│   └── 03_regression_output_table.png
+│
+├── 03_model_specification_testing/
+│   └── 01_model_specification_testing.do
+│
+├── 04_graphs_visuals/
+│   ├── 01_graphs.do
+│   ├── 02_histogram_income.png
+│   ├── 03_histogram_lnincome.png
+│   ├── 04_boxplot.png
+│   └── 05_scatterplot.png
+│
+└── README.md
+```
+
+
